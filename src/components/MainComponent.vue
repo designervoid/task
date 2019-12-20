@@ -30,22 +30,25 @@
               </div>
             </header>
             <section>
-              <div class="columns is-mobile columns-declaration" v-for="(i, index) in data" :key="index">
+              <div class="columns is-mobile columns-declaration" v-for="(declaration, index) in data" :key="index" @click="saveState(JSON.stringify(declaration));">
                 <div class="column column-declaration" >
-                  {{ i.id }}
+                  {{ declaration.id }}
                 </div>
                 <div class="column column-declaration">
-                  {{ i.address }}
+                  {{ declaration.address }}
                 </div>
                 <div class="column column-declaration">
-                  {{ i.title }}
+                  {{ declaration.title }}
                 </div>
                 <div class="column column-declaration">
-                  {{ i.previewImage }}
+                  {{ declaration.previewImage }}
                 </div>
                 <div class="column">
-                  {{ i.price }}
+                  {{ declaration.price }}
                 </div>
+              </div>
+              <div class="columns text-center" style="margin-top: 20px;">
+                {{ selected }}
               </div>
             </section>
         </div>
@@ -68,17 +71,26 @@
         },
         created() {
           // this.apiGet('http://134.209.138.34/')
-          this.apiGet('http://134.209.138.34/items')
+          let is_not_extended_data_request = true;
+          this.apiGet('http://134.209.138.34/items', 'SET_NOT_EXTENDED_DATA', is_not_extended_data_request);
+
+          let is_extended_data_request = false;
+          this.apiGet('http://134.209.138.34/item/1849621339', 'SET_EXTENDED_DATA', is_extended_data_request);
           // this.apiGet('http://134.209.138.34/item/1849621339')
         },
         methods: {
-          apiGet(link) {
+          apiGet(link, store_mutation, is_extended_data_request) {
             axios
               .get(link)
               .then(response => {
-                this.data = response.data;
-                this.$store.commit('SET_DATA', JSON.stringify(this.data));
-                // alert(this.$store.state.data)
+                if (is_extended_data_request) {
+                  this.data = response.data;
+                }
+                this.$store.commit(store_mutation, JSON.stringify(response.data));
+
+                // debug
+                // alert(this.$store.state.not_extended_data)
+                // alert(this.$store.state.extended_data)
               })
               .catch(error => {
                 alert(error);
@@ -89,9 +101,9 @@
           sliceData() {
 
           },
-          saveState() {
-
-          }
+          saveState(payload) {
+            this.selected = payload
+          },
         }
     }
 </script>

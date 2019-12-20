@@ -5,11 +5,15 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    data: []
+    not_extended_data: [],
+    extended_data: []
   },
   mutations: {
-    SET_DATA: (state, payload) => {
-      state.data.push(payload);
+    SET_NOT_EXTENDED_DATA: (state, payload) => {
+      state.not_extended_data.push(payload);
+    },
+    SET_EXTENDED_DATA: (state, payload) => {
+      state.extended_data.push(payload);
     }
   },
   actions: {

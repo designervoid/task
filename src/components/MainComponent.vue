@@ -9,7 +9,7 @@
                 custom-class="fa-spin">
             </b-icon>
         </b-loading>
-        <div v-if="!isLoading">
+        <div v-if="!isLoading && isNotSelected">
             <header>
               <div class="columns is-mobile columns-declaration-header">
                 <div class="column is-text-left column-declaration-header">
@@ -30,7 +30,7 @@
               </div>
             </header>
             <section>
-              <div class="columns is-mobile columns-declaration" v-for="(declaration, index) in data" :key="index" @click="saveState(JSON.stringify(declaration));">
+              <div class="columns is-mobile columns-declaration" v-for="(declaration, index) in data" :key="index" @click="saveState(JSON.stringify(declaration)); isNotSelected = !isNotSelected;">
                 <div class="errored-block" v-if="errored">
                   Some troubles...
                 </div>
@@ -52,10 +52,18 @@
                   </div>
                 </div>
               </div>
-              <div class="columns text-center" style="margin-top: 20px;">
-                {{ selected }}
-              </div>
             </section>
+        </div>
+        <div class="columns text-center" style="margin-top: 20px;" v-else>
+          <div class="" @click="isNotSelected = !isNotSelected">
+            <b-icon
+                  icon="angle-left"
+                  size="is-large"
+                  type="is-primary"
+                  >
+            </b-icon>
+          </div>
+          {{ selected }}
         </div>
       </section>
       <footer>
@@ -70,14 +78,15 @@
         data() {
             return {
                 data: null,
-                selected: [],
                 isLoading: true,
-                errored: false
+                errored: false,
+                selected: [],
+                isNotSelected: true
             }
         },
         created() {
           this.apiGet('http://134.209.138.34/items', 'SET_NOT_EXTENDED_DATA');
-          this.apiGet('http://134.209.138.34/item/1849621339', 'SET_EXTENDED_DATA');
+          // this.apiGet('http://134.209.138.34/item/1849621339', 'SET_EXTENDED_DATA');
         },
         methods: {
           apiGet(link, store_mutation) {
@@ -103,7 +112,7 @@
 
           },
           saveState(payload) {
-            this.selected = payload
+            this.selected = JSON.parse(payload)
           },
         }
     }

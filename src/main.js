@@ -7,10 +7,10 @@ import Buefy from "buefy";
 import "./main.scss";
 
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faGlobe, faCog, faCubes, faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
+import { faSyncAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
-library.add(faGlobe, faCog, faCubes, faSignOutAlt);
+library.add(faSyncAlt);
 Vue.component('vue-fontawesome', FontAwesomeIcon);
 
 Vue.config.productionTip = false

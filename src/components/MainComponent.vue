@@ -31,20 +31,25 @@
             </header>
             <section>
               <div class="columns is-mobile columns-declaration" v-for="(declaration, index) in data" :key="index" @click="saveState(JSON.stringify(declaration));">
-                <div class="column column-declaration" >
-                  {{ declaration.id }}
+                <div class="errored-block" v-if="errored">
+                  Some troubles...
                 </div>
-                <div class="column column-declaration">
-                  {{ declaration.address }}
-                </div>
-                <div class="column column-declaration">
-                  {{ declaration.title }}
-                </div>
-                <div class="column column-declaration">
-                  {{ declaration.previewImage }}
-                </div>
-                <div class="column">
-                  {{ declaration.price }}
+                <div class="not-errored-block" v-else style="">
+                  <div class="column column-declaration" >
+                    {{ declaration.id }}
+                  </div>
+                  <div class="column column-declaration">
+                    {{ declaration.address }}
+                  </div>
+                  <div class="column column-declaration">
+                    {{ declaration.title }}
+                  </div>
+                  <div class="column column-declaration">
+                    <img :src="declaration.previewImage" alt="">
+                  </div>
+                  <div class="column">
+                    {{ declaration.price }}
+                  </div>
                 </div>
               </div>
               <div class="columns text-center" style="margin-top: 20px;">
@@ -52,7 +57,7 @@
               </div>
             </section>
         </div>
-    </section>
+      </section>
       <footer>
 
       </footer>
@@ -66,24 +71,20 @@
             return {
                 data: null,
                 selected: [],
-                isLoading: true
+                isLoading: true,
+                errored: false
             }
         },
         created() {
-          // this.apiGet('http://134.209.138.34/')
-          let is_not_extended_data_request = true;
-          this.apiGet('http://134.209.138.34/items', 'SET_NOT_EXTENDED_DATA', is_not_extended_data_request);
-
-          let is_extended_data_request = false;
-          this.apiGet('http://134.209.138.34/item/1849621339', 'SET_EXTENDED_DATA', is_extended_data_request);
-          // this.apiGet('http://134.209.138.34/item/1849621339')
+          this.apiGet('http://134.209.138.34/items', 'SET_NOT_EXTENDED_DATA');
+          this.apiGet('http://134.209.138.34/item/1849621339', 'SET_EXTENDED_DATA');
         },
         methods: {
-          apiGet(link, store_mutation, is_extended_data_request) {
+          apiGet(link, store_mutation) {
             axios
               .get(link)
               .then(response => {
-                if (is_extended_data_request) {
+                if (this.data == null) {
                   this.data = response.data;
                 }
                 this.$store.commit(store_mutation, JSON.stringify(response.data));
@@ -108,12 +109,16 @@
     }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
   .column-declaration-header {
     padding: 0;
   }
   .columns-declaration-header,
   .columns-declaration {
     padding: 1rem;
+  }
+  .not-errored-block {
+    display:flex;
+    width: 100%;
   }
 </style>

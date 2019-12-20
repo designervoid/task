@@ -4,6 +4,7 @@
     <router-view/>
   </div>
 </template>
+
 <script>
   import MainView from '@/views/MainView'
   export default {
@@ -13,6 +14,7 @@
     }
   }
 </script>
+
 <style lang="scss">
 
 </style>

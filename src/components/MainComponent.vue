@@ -1,84 +1,90 @@
 <template>
-    <section>
-      {{ clientside_data[0] }} <br><hr>
-      {{ clientside_data[1] }} <br><hr>
-      {{ clientside_data[2] }} <br><hr>
-        <b-tabs>
-            <b-tab-item label="Table">
-                <b-table
-                    :data="data"
-                    :columns="columns"
-                    :selected.sync="selected"
-                    focusable>
-                </b-table>
-            </b-tab-item>
+  <div class="">
+      <header>
+        <div class="columns is-mobile columns-declaration-header">
+          <div class="column is-text-left column-declaration-header">
+            ID
+          </div>
+          <div class="column is-text-left column-declaration-header">
+            Address
+          </div>
+          <div class="column is-text-left column-declaration-header">
+            Title
+          </div>
+          <div class="column is-text-left column-declaration-header">
+            PreviewImage
+          </div>
+          <div class="column is-text-left column-declaration-header">
+            Price
+          </div>
+        </div>
+      </header>
+      <section>
+        <div class="columns is-mobile columns-declaration" v-for="(i, index) in data" :key="index">
+          <div class="column column-declaration">
+            {{ i.id }}
+          </div>
+          <div class="column column-declaration">
+            {{ i.address }}
+          </div>
+          <div class="column column-declaration">
+            {{ i.title }}
+          </div>
+          <div class="column column-declaration">
+            {{ i.previewImage }}
+          </div>
+          <div class="column">
+            {{ i.price }}
+          </div>
+        </div>
+      </section>
+      <footer>
 
-            <b-tab-item label="Selected">
-                <pre>{{ selected }}</pre>
-            </b-tab-item>
-        </b-tabs>
-    </section>
+      </footer>
+  </div>
 </template>
 
 <script>
   import axios from 'axios'
     export default {
         data() {
-            const data = [
-                { 'id': 1, 'address': 'test', 'title': 'test', 'previewImage': 'link-img', 'price': 'Male' },
-            ]
-
             return {
-                data,
-                clientside_data: [],
-                selected: data[1],
-                columns: [
-                    {
-                        field: 'id',
-                        label: 'ID',
-                        width: '40',
-                        numeric: true
-                    },
-                    {
-                        field: 'address',
-                        label: 'Address',
-                    },
-                    {
-                        field: 'title',
-                        label: 'Title',
-                    },
-                    {
-                        field: 'previewImage',
-                        label: 'previewImage',
-                        centered: true
-                    },
-                    {
-                        field: 'price',
-                        label: 'Price',
-                        width: '100',
-                        numeric: true
-                    }
-                ]
+                data: null,
+                selected: []
             }
         },
         created() {
-          this.apiGet('http://134.209.138.34/')
+          // this.apiGet('http://134.209.138.34/')
           this.apiGet('http://134.209.138.34/items')
-          this.apiGet('http://134.209.138.34/item/1849621339')
+          // this.apiGet('http://134.209.138.34/item/1849621339')
+
         },
         methods: {
           apiGet(link) {
             axios
               .get(link)
               .then(response => {
-                this.clientside_data.push(response.data);
+                this.data = response.data;
               })
               .catch(error => {
                 alert(error);
                 this.errored = true;
               })
               .finally(() => (this.loading = false));
+          },
+          sliceData() {
+
           }
         }
     }
 </script>
+
+<style scoped>
+  .column-declaration-header {
+    padding: 0;
+  }
+  .columns-declaration-header,
+  .columns-declaration {
+    padding: 1rem;
+  }
+</style>

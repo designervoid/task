@@ -30,7 +30,7 @@
               </div>
             </header>
             <section>
-              <div class="columns is-mobile columns-declaration" v-for="(declaration, index) in data" :key="index" @click="saveState(JSON.stringify(declaration)); isNotSelected = !isNotSelected;">
+              <div class="columns is-mobile columns-declaration" v-for="(declaration, index) in data" :key="index" @click="saveState(JSON.stringify(declaration)); isNotSelected = !isNotSelected; getMoreData(declaration.id);">
                 <div class="errored-block" v-if="errored">
                   Some troubles...
                 </div>
@@ -63,7 +63,7 @@
                   >
             </b-icon>
           </div>
-          {{ selected }}
+          <moreInfoComponent :id="selected.id" :obj="extended_data"/>
         </div>
       </section>
       <footer>
@@ -73,34 +73,37 @@
 </template>
 
 <script>
-  import axios from 'axios'
+    import axios from 'axios'
+    import moreInfoComponent from './moreInfoComponent'
+
     export default {
         data() {
             return {
                 data: null,
+                extended_data: null,
                 isLoading: true,
                 errored: false,
                 selected: [],
-                isNotSelected: true
+                isNotSelected: true,
+                searchedById: null
             }
         },
+        components: {
+          moreInfoComponent
+        },
         created() {
-          this.apiGet('http://134.209.138.34/items', 'SET_NOT_EXTENDED_DATA');
-          // this.apiGet('http://134.209.138.34/item/1849621339', 'SET_EXTENDED_DATA');
+          this.apiGet('http://134.209.138.34/items', false);
         },
         methods: {
-          apiGet(link, store_mutation) {
+          apiGet(link, extended_data_request) {
             axios
               .get(link)
               .then(response => {
-                if (this.data == null) {
+                if (!extended_data_request) {
                   this.data = response.data;
+                } else {
+                  this.extended_data = response.data;
                 }
-                this.$store.commit(store_mutation, JSON.stringify(response.data));
-
-                // debug
-                // alert(this.$store.state.not_extended_data)
-                // alert(this.$store.state.extended_data)
               })
               .catch(error => {
                 alert(error);
@@ -114,6 +117,9 @@
           saveState(payload) {
             this.selected = JSON.parse(payload)
           },
+          getMoreData(id) {
+            this.apiGet(`http://134.209.138.34/item/${id}`, true);
+          }
         }
     }
 </script>

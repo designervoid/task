@@ -8,7 +8,7 @@
 <script>
 import axios from 'axios'
 export default {
-  name: 'moreInfoComponent',
+  name: 'MoreInfoComponent',
   props: {
     id: [Number, String],
     obj: [Array]

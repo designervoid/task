@@ -9,7 +9,7 @@
                 custom-class="fa-spin">
             </b-icon>
         </b-loading>
-        <div v-if="!isLoading && isNotSelected">
+        <div v-if="!isLoading && isNotSelected && !isImageSelected">
             <header>
               <div class="columns is-mobile columns-declaration-header">
                 <div class="column is-text-left column-declaration-header">
@@ -30,7 +30,7 @@
               </div>
             </header>
             <section>
-              <div class="columns is-mobile columns-declaration" v-for="(declaration, index) in data" :key="index" @click="saveState(JSON.stringify(declaration)); isNotSelected = !isNotSelected; getMoreData(declaration.id);">
+              <div class="columns is-mobile columns-declaration" v-for="(declaration, index) in data" :key="index" @click="saveState(JSON.stringify(declaration)); selectData(); getMoreData(declaration.id);">
                 <div class="errored-block" v-if="errored">
                   Some troubles...
                 </div>
@@ -45,7 +45,7 @@
                     {{ declaration.title }}
                   </div>
                   <div class="column column-declaration">
-                    <img :src="declaration.previewImage" alt="">
+                    <img :src="declaration.previewImage" alt="" @click="clickImage()">
                   </div>
                   <div class="column">
                     {{ declaration.price }}
@@ -54,7 +54,7 @@
               </div>
             </section>
         </div>
-        <div class="columns text-center" style="margin-top: 20px;" v-else>
+        <div class="columns text-center" style="margin-top: 20px;" v-else-if="!isNotSelected">
           <div class="" @click="isNotSelected = !isNotSelected">
             <b-icon
                   icon="angle-left"
@@ -63,9 +63,21 @@
                   >
             </b-icon>
           </div>
-          <moreInfoComponent :id="selected.id" :obj="extended_data"/>
+          <MoreInfoComponent :id="selected.id" :obj="extended_data"/>
+        </div>
+        <div class="" v-else-if="isImageSelected">
+            <div class="" @click="isImageSelected = !isImageSelected">
+              <b-icon
+                    icon="angle-left"
+                    size="is-large"
+                    type="is-primary"
+                    >
+              </b-icon>
+            </div>
+            <img :src="selected.previewImage" alt="">
         </div>
       </section>
+
       <footer>
 
       </footer>
@@ -74,7 +86,7 @@
 
 <script>
     import axios from 'axios'
-    import moreInfoComponent from './moreInfoComponent'
+    import MoreInfoComponent from './MoreInfoComponent'
 
     export default {
         data() {
@@ -85,11 +97,12 @@
                 errored: false,
                 selected: [],
                 isNotSelected: true,
-                searchedById: null
+                searchedById: null,
+                isImageSelected: false
             }
         },
         components: {
-          moreInfoComponent
+          MoreInfoComponent
         },
         created() {
           this.apiGet('http://134.209.138.34/items', false);
@@ -114,11 +127,22 @@
           sliceData() {
 
           },
+          saveFavoriteData() {
+
+          },
           saveState(payload) {
             this.selected = JSON.parse(payload)
           },
+          selectData() {
+              if (!this.isImageSelected) {
+                  this.isNotSelected = !this.isNotSelected;
+              }
+          },
           getMoreData(id) {
             this.apiGet(`http://134.209.138.34/item/${id}`, true);
+          },
+          clickImage() {
+              this.isImageSelected = true
           }
         }
     }

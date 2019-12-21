@@ -1,7 +1,7 @@
 <template lang="html">
   <div class="">
-    {{ test_id }}<br>
-    {{ test_obj }}
+    {{ this.id }}<br>
+    {{ this.obj }}
   </div>
 </template>
 
@@ -15,8 +15,7 @@ export default {
   },
   data() {
     return {
-      test_id: this.id,
-      test_obj: this.obj
+        
     }
   },
   mounted() {

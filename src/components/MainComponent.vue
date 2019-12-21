@@ -65,17 +65,13 @@
           </div>
           <MoreInfoComponent :id="selected.id" :obj="extended_data"/>
         </div>
-        <div class="" v-else-if="isImageSelected">
-            <div class="" @click="isImageSelected = !isImageSelected">
-              <b-icon
-                    icon="angle-left"
-                    size="is-large"
-                    type="is-primary"
-                    >
-              </b-icon>
-            </div>
-            <img :src="selected.previewImage" alt="">
-        </div>
+
+            <b-modal :active.sync="isImageSelected">
+                        <p class="image">
+                            <img :src="selected.previewImage">
+                        </p>
+                    </b-modal>
+
       </section>
 
       <footer>
